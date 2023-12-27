@@ -12,7 +12,7 @@ using WebApplicationTemplate.Data;
 namespace WebApplicationTemplate.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20231227031911_Initial")]
+    [Migration("20231227052454_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -180,6 +180,14 @@ namespace WebApplicationTemplate.Migrations.Identity
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
