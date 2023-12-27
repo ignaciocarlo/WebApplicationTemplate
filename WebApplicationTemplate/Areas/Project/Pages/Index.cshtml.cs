@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebApplicationTemplate.Models;
 
-namespace WebApplicationTemplate.Pages.Project
+namespace WebApplicationTemplate.Areas.Project.Pages
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly ApplicationContext _context;
@@ -25,7 +27,7 @@ namespace WebApplicationTemplate.Pages.Project
             var project = from p in _context.Project
                           select p;
 
-            if(!SearchString.IsNullOrEmpty())
+            if (!SearchString.IsNullOrEmpty())
             {
                 project = project.Where(p => p.ProjectName.Contains(SearchString!));
             }

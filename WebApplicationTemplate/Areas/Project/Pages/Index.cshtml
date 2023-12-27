@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model WebApplicationTemplate.Areas.Project.Pages.IndexModel
 
 @{
     ViewData["Title"] = "Project List";
@@ -42,9 +42,9 @@
                     @Html.DisplayFor(modelItem => item.ProjectDescription)
                 </td>
                 <td>
-                    <a asp-page="/Project/Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="/Project/Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="/Project/Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-page="/Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="/Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="/Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }
