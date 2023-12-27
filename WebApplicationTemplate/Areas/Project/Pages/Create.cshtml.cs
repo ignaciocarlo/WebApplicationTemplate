@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApplicationTemplate.Models;
 
-namespace WebApplicationTemplate.Pages.Project
+namespace WebApplicationTemplate.Areas.Project.Pages
 {
     public class CreateModel : PageModel
     {

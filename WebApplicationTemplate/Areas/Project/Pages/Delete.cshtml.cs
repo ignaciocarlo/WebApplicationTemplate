@@ -4,17 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationTemplate.Models;
 
-namespace WebApplicationTemplate.Pages.Project
+namespace WebApplicationTemplate.Areas.Project.Pages
 {
-    public class EditModel : PageModel
+    public class DeleteModel : PageModel
     {
         private readonly ApplicationContext _context;
 
-        public EditModel(ApplicationContext context)
+        public DeleteModel(ApplicationContext context)
         {
             _context = context;
         }
@@ -30,47 +29,34 @@ namespace WebApplicationTemplate.Pages.Project
             }
 
             var project = await _context.Project.FirstOrDefaultAsync(m => m.Id == id);
+
             if (project == null)
             {
                 return NotFound();
             }
-            Project = project;
+            else
+            {
+                Project = project;
+            }
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Project).State = EntityState.Modified;
-
-            try
+            var project = await _context.Project.FindAsync(id);
+            if (project != null)
             {
+                Project = project;
+                _context.Project.Remove(Project);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProjectExists(Project.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool ProjectExists(string id)
-        {
-            return _context.Project.Any(e => e.Id == id);
         }
     }
 }

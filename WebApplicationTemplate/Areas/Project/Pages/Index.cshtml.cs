@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebApplicationTemplate.Models;
 
-namespace WebApplicationTemplate.Pages.Project
+namespace WebApplicationTemplate.Areas.Project.Pages
 {
     public class IndexModel : PageModel
     {
@@ -25,7 +25,7 @@ namespace WebApplicationTemplate.Pages.Project
             var project = from p in _context.Project
                           select p;
 
-            if(!SearchString.IsNullOrEmpty())
+            if (!SearchString.IsNullOrEmpty())
             {
                 project = project.Where(p => p.ProjectName.Contains(SearchString!));
             }

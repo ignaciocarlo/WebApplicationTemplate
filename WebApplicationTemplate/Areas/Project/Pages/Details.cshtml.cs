@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationTemplate.Models;
 
-namespace WebApplicationTemplate.Pages.Project
+namespace WebApplicationTemplate.Areas.Project.Pages
 {
     public class DetailsModel : PageModel
     {
