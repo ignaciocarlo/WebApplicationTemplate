@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationTemplate.Models;
 
 namespace WebApplicationTemplate.Areas.Project.Pages
 {
+    [Authorize]
     public class DetailsModel : PageModel
     {
         private readonly ApplicationContext _context;

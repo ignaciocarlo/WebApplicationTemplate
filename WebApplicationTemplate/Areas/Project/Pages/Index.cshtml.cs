@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using WebApplicationTemplate.Models;
 
 namespace WebApplicationTemplate.Areas.Project.Pages
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly ApplicationContext _context;
