@@ -14,8 +14,9 @@
 <table id="project" class="table table-sm table-bordered table-striped" style="width:100%">
     <thead>
         <tr>
-            <th>Project Name</th>
-            <th>Project Description</th>
+            <th>@Html.DisplayNameFor(model => model.Project[0].ProjectName)</th>
+            <th>@Html.DisplayNameFor(model => model.Project[0].ProjectDescription)</th>
+            <th></th>
         </tr>
     </thead>
 </table>
@@ -27,15 +28,17 @@
     <script>
         $(document).ready(function () {
                 $('#project').DataTable({
+                    deferRender: true,
                     ordering: true,
                     paging: true,
                     searching: true,
                     select: false,
+                    processing: true,
+                    serverSide: true,
+                    order: [[0, 'asc']],
                     ajax: {
                     url: '?handler=ListAll',
-                        type: "POST",
-                        processing: true,
-                        serverSide: true,
+                        type: "POST",    
                         headers: {
                             RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
                         },
@@ -43,7 +46,15 @@
                     columns: [
                         { data: 'projectName', name: 'ProjectName' },
                         { data: 'projectDescription', name: 'ProjectDescription' },
-                    ]
+                        {
+                            data: null,
+                            render: function (row) {
+                                return '<a class="btn btn-secondary" href="/Project/Details?id=' + row.id + '">View</a> <a class="btn btn-primary" href="/Project/Edit?id=' + row.id + '">Edit</a> <a class="btn btn-danger" href="/Project/Delete?id=' + row.id + '">Delete</a>'
+                            },
+                            sortable: false,
+                            width: "20%",
+                        },
+                    ],
                 });
             });
     </script>

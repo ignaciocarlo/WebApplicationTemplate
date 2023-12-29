@@ -19,9 +19,6 @@ namespace WebApplicationTemplate.Areas.Project.Pages
 
         public IList<ProjectState> Project { get; set; } = default!;
 
-        [BindProperty(SupportsGet = true)]
-        public string? SearchString { get; set; }
-
         public IActionResult OnGetAsync()
         {
 
