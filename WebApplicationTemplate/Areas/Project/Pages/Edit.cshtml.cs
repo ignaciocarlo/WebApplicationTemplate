@@ -1,28 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using WebApplicationTemplate.Models;
+using WebApplicationTemplate.Areas.Project.Models;
+using WebApplicationTemplate.Features.Project.Commands;
+using WebApplicationTemplate.Features.Project.Queries;
 
 namespace WebApplicationTemplate.Areas.Project.Pages
 {
     [Authorize]
     public class EditModel : PageModel
     {
-        private readonly ApplicationContext _context;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public EditModel(ApplicationContext context)
+        public EditModel(IMediator mediator, IMapper mapper)
         {
-            _context = context;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         [BindProperty]
-        public ProjectState Project { get; set; } = default!;
+        public ProjectViewModel Project { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -31,12 +31,15 @@ namespace WebApplicationTemplate.Areas.Project.Pages
                 return NotFound();
             }
 
-            var project = await _context.Project.FirstOrDefaultAsync(m => m.Id == id);
+            var project = await _mediator.Send(new GetProjectByIdQuery() { Id = id });
             if (project == null)
             {
                 return NotFound();
             }
-            Project = project;
+            else
+            {
+                Project = _mapper.Map(project, Project);
+            }
             return Page();
         }
 
@@ -49,30 +52,10 @@ namespace WebApplicationTemplate.Areas.Project.Pages
                 return Page();
             }
 
-            _context.Attach(Project).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProjectExists(Project.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var result = await _mediator.Send(_mapper.Map<EditProjectCommand>(Project));
+            if (result == null) { return NotFound(); }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool ProjectExists(string id)
-        {
-            return _context.Project.Any(e => e.Id == id);
         }
     }
 }

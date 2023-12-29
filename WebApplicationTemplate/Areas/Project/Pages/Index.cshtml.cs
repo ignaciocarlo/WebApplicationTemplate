@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using WebApplicationTemplate.Features.Project.Queries;
 using WebApplicationTemplate.Models;
 
 namespace WebApplicationTemplate.Areas.Project.Pages
@@ -10,11 +10,10 @@ namespace WebApplicationTemplate.Areas.Project.Pages
     [Authorize]
     public class IndexModel : PageModel
     {
-        private readonly ApplicationContext _context;
-
-        public IndexModel(ApplicationContext context)
+        private readonly IMediator _mediator;
+        public IndexModel(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
         }
 
         public IList<ProjectState> Project { get; set; } = default!;
@@ -27,11 +26,10 @@ namespace WebApplicationTemplate.Areas.Project.Pages
 
         public async Task<IActionResult> OnPostListAllAsync()
         {
-            var projects = await _context.Project.ToListAsync();
-
+            var projects = await _mediator.Send(new GetAllProjectsQuery());
             var dataTableResponse = new DataTableResponse
             {
-                RecordsTotal = projects.Count,
+                RecordsTotal = projects.Count(),
                 RecordsFiltered = 10, // You may need to adjust this based on your filtering logic
                 Data = projects.ToArray()
             };

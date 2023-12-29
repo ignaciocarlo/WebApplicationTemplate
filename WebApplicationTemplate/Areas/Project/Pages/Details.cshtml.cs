@@ -1,38 +1,37 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using WebApplicationTemplate.Models;
+using WebApplicationTemplate.Areas.Project.Models;
+using WebApplicationTemplate.Features.Project.Queries;
 
 namespace WebApplicationTemplate.Areas.Project.Pages
 {
     [Authorize]
     public class DetailsModel : PageModel
     {
-        private readonly ApplicationContext _context;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public DetailsModel(ApplicationContext context)
+        public DetailsModel(IMediator mediator, IMapper mapper)
         {
-            _context = context;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
-        public ProjectState Project { get; set; } = default!;
+        public ProjectViewModel Project { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var project = await _context.Project.FirstOrDefaultAsync(m => m.Id == id);
+            var project = await _mediator.Send(new GetProjectByIdQuery() { Id = id });
             if (project == null)
             {
                 return NotFound();
             }
             else
             {
-                Project = project;
+                Project = _mapper.Map(project, Project);
             }
             return Page();
         }

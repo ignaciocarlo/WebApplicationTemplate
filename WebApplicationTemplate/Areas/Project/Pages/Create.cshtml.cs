@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using WebApplicationTemplate.Models;
+using WebApplicationTemplate.Areas.Project.Models;
+using WebApplicationTemplate.Features.Project.Commands;
 
 namespace WebApplicationTemplate.Areas.Project.Pages
 {
     [Authorize]
     public class CreateModel : PageModel
     {
-        private readonly ApplicationContext _context;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public CreateModel(ApplicationContext context)
+        public CreateModel(IMediator mediator, IMapper mapper)
         {
-            _context = context;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         public IActionResult OnGet()
@@ -26,19 +26,17 @@ namespace WebApplicationTemplate.Areas.Project.Pages
         }
 
         [BindProperty]
-        public ProjectState Project { get; set; } = default!;
+        public ProjectViewModel Project { get; set; } = default!;
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
+        { 
+            if(!ModelState.IsValid)
             {
                 return Page();
             }
-
-            _context.Project.Add(Project);
-            await _context.SaveChangesAsync();
-
+            var result = await _mediator.Send(_mapper.Map<CreateProjectCommand>(Project));
+            if (result == null) { return Page(); }
             return RedirectToPage("./Index");
         }
     }
