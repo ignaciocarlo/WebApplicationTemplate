@@ -33,19 +33,19 @@
                     paging: true,
                     searching: true,
                     select: false,
-                    processing: true,
-                    serverSide: true,
                     order: [[0, 'asc']],
                     ajax: {
                     url: '?handler=ListAll',
-                        type: "POST",    
+                        type: "POST",
+                        processing: true,
+                        serverSide: true,
                         headers: {
                             RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
                         },
                     },
                     columns: [
-                        { data: 'projectName', name: 'ProjectName' },
-                        { data: 'projectDescription', name: 'ProjectDescription' },
+                        { data: 'projectName', name: 'ProjectName', searchable: true },
+                        { data: 'projectDescription', name: 'ProjectDescription', searchable: true },
                         {
                             data: null,
                             render: function (row) {
