@@ -22,16 +22,28 @@ namespace WebApplicationTemplate.Areas.Project.Pages
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
 
-        public async Task OnGetAsync()
+        public IActionResult OnGetAsync()
         {
-            var project = from p in _context.Project
-                          select p;
 
-            if (!SearchString.IsNullOrEmpty())
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostListAllAsync()
+        {
+            var projects = await _context.Project.ToListAsync();
+
+            var dataTableResponse = new DataTableResponse
             {
-                project = project.Where(p => p.ProjectName.Contains(SearchString!));
-            }
-            Project = await project.ToListAsync();
+                RecordsTotal = projects.Count,
+                RecordsFiltered = 10, // You may need to adjust this based on your filtering logic
+                Data = projects.ToArray()
+            };
+            return new JsonResult(new
+            {
+                recordsTotal = dataTableResponse.RecordsTotal,
+                recordsFiltered = dataTableResponse.RecordsFiltered,
+                data = dataTableResponse.Data
+            });
         }
     }
 }

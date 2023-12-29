@@ -11,42 +11,40 @@
     <a asp-page="Create">Create New</a>
 </p>
 
-<!-- Sample Search Filter -->
-<form>
-    <p>
-        Project Name: <input type="text" asp-for="SearchString" />
-        <input type="submit" value="Filter" />
-    </p>
-</form>
-
-<table class="table">
+<table id="project" class="table table-sm table-bordered table-striped" style="width:100%">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].ProjectName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].ProjectDescription)
-            </th>
-            <th></th>
+            <th>Project Name</th>
+            <th>Project Description</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model.Project)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProjectName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProjectDescription)
-                </td>
-                <td>
-                    <a asp-page="/Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="/Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="/Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
+
+@section Scripts
+{
+   <partial name="_Scripts" />
+
+    <script>
+        $(document).ready(function () {
+                $('#project').DataTable({
+                    ordering: true,
+                    paging: true,
+                    searching: true,
+                    select: false,
+                    ajax: {
+                    url: '?handler=ListAll',
+                        type: "POST",
+                        processing: true,
+                        serverSide: true,
+                        headers: {
+                            RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                        },
+                    },
+                    columns: [
+                        { data: 'projectName', name: 'ProjectName' },
+                        { data: 'projectDescription', name: 'ProjectDescription' },
+                    ]
+                });
+            });
+    </script>
+}
